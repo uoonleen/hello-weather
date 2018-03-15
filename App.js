@@ -1,11 +1,33 @@
-import React from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, ActivityIndicator, StatusBar } from 'react-native';
+import Weather from './Weather'
 
 export default class App extends React.Component {
+  state = {
+    isLoaded: false
+  };
+
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.setState({
+          isLoaded: true
+        })
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
   render() {
+    const { isLoaded } = this.state;
     return (
       <View style={styles.container}>
-
+        <StatusBar hidden={true} barStyle="light-content"></StatusBar>
+        { isLoaded ? <Weather/> : (
+          <View style={styles.loading}>
+            <Text style={styles.loadingText}>Getting the hello weather</Text>
+          </View>)}
       </View>
     );
   }
@@ -14,20 +36,16 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    flexWrap: 'wrap'
+    backgroundColor: '#fff'
   },
-  redView: {
-    height:50,
-    width:50,
-    backgroundColor: 'red'
+  loading: {
+    flex: 1,
+    backgroundColor: '#FDF6AA',
+    justifyContent: 'flex-end',
+    paddingLeft: 25
   },
-  yellowView: {
-    height:50,
-    width:50,
-    backgroundColor: 'yellow'
+  loadingText: {
+    fontSize: 38,
+    marginBottom: 24
   }
 });
